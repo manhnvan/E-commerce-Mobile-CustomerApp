@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:seller_app/screens/AddProductScreen/AddProductScreen.dart';
+import 'package:seller_app/screens/ChatScreen/ChatScreen.dart';
+import 'package:seller_app/screens/ChatScreen/Chatbox.dart';
 import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
-import 'package:seller_app/screens/OrderScreen/TabBarOrder.dart';
-import 'components/BottomNavBar.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,28 +18,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    
-    return DefaultTabController(
-      length: 4,
-      child: AddProductScreen(),
+      initialRoute: OrderScreen.routeName,
+      routes: {
+        OrderScreen.routeName: (context) => OrderScreen(),
+        AddProductScreen.routeName: (context) => AddProductScreen(),
+        ChatScreen.routeName: (context) => ChatScreen(),
+        ChatBox.routeName: (context) => ChatBox()
+      },
     );
   }
 }

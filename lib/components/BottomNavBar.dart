@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/screens/AddProductScreen/AddProductScreen.dart';
+import 'package:seller_app/screens/ChatScreen/ChatScreen.dart';
+import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
 
-class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({
-    Key key,
-    this.currentIndex,
-  }) : super(key: key);
+class BottomNavBar extends StatelessWidget {
+  
+  BottomNavBar(this.currentIndex);
 
-  final currentIndex;
+  int currentIndex;
 
-  @override
-  _BottomNavBarState createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar> {
-
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    print('hello');
-  }
+  final listWidget = [
+    OrderScreen.routeName,
+    OrderScreen.routeName,
+    AddProductScreen.routeName,
+    ChatScreen.routeName,
+    AddProductScreen.routeName,
+  ];
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      onTap: _onItemTapped,
-      currentIndex: _selectedIndex,
+      onTap: (index) {
+        Navigator.pushNamed(context, listWidget[index]);
+      },
+      currentIndex: currentIndex,
       items: <BottomNavigationBarItem> [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
