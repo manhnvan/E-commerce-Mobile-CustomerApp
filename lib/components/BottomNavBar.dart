@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/screens/AccountScreen/AccountScreen.dart';
 import 'package:seller_app/screens/AddProductScreen/AddProductScreen.dart';
 import 'package:seller_app/screens/ChatScreen/ChatScreen.dart';
+import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
 import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -10,11 +12,11 @@ class BottomNavBar extends StatelessWidget {
   int currentIndex;
 
   final listWidget = [
-    OrderScreen.routeName,
+    HomeScreen.routeName,
     OrderScreen.routeName,
     AddProductScreen.routeName,
     ChatScreen.routeName,
-    AddProductScreen.routeName,
+    AccountScreen.routeName,
   ];
 
   @override

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/screens/AccountScreen/AccountScreen.dart';
 import 'package:seller_app/screens/AddProductScreen/AddProductScreen.dart';
 import 'package:seller_app/screens/ChatScreen/ChatScreen.dart';
 import 'package:seller_app/screens/ChatScreen/Chatbox.dart';
+import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
+import 'package:seller_app/screens/HomeScreen/ProductDetail.dart';
+import 'package:seller_app/screens/LoginScreen/LoginScreen.dart';
 import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
+import 'package:seller_app/screens/RegisterScreen/RegisterScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,12 +23,17 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: OrderScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       routes: {
+        HomeScreen.routeName: (context) => HomeScreen(),
         OrderScreen.routeName: (context) => OrderScreen(),
         AddProductScreen.routeName: (context) => AddProductScreen(),
         ChatScreen.routeName: (context) => ChatScreen(),
-        ChatBox.routeName: (context) => ChatBox()
+        ChatBox.routeName: (context) => ChatBox(),
+        AccountScreen.routeName: (context) => AccountScreen(),
+        ProductDetail.routeName: (context) =>ProductDetail(),
+        LoginScreen.routeName: (context) => LoginScreen(),
+        RegisterScreen.routeName: (context) => RegisterScreen()
       },
     );
   }
