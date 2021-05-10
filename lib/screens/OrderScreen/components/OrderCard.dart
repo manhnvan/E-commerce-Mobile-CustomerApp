@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+
+import '../../../constaint.dart';
 
 class OrderCard extends StatelessWidget {
+
+
+  String productName, thumbnail, orderItemId, date, denyStatus, nextStepStatus, currentStatus;
+  int amount, price;
+  Function updateStatusAction;
+
   OrderCard({
     Key key,
     this.productName, 
     this.amount, 
     this.price, 
-    this.date
+    this.date,
+    this.thumbnail,
+    this.orderItemId,
+    this.updateStatusAction,
+    this.nextStepStatus,
+    this.denyStatus,
+    this.currentStatus
   }) : super(key: key);
-
-  String productName;
-  int amount, price;
-  String date;
 
   @override
   Widget build(BuildContext context) {
@@ -20,38 +31,46 @@ class OrderCard extends StatelessWidget {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       secondaryActions: [
-        Positioned.fill(
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            constraints: BoxConstraints.expand(),
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(46, 204, 113, 0.5),
-              borderRadius: BorderRadius.circular(20)
-            ),
+        if (nextStepStatus != null) 
+          GestureDetector (
+            onTap: () {
+              updateStatusAction(orderItemId, nextStepStatus);
+            },
             child: Container(
-              child: Icon(
-                Icons.check_box,
-                size: 35,
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              constraints: BoxConstraints.expand(),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(46, 204, 113, 0.5),
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Container(
+                child: Icon(
+                  Icons.check_box,
+                  size: 35,
+                ),
               ),
             ),
           ),
-        ),
-        Positioned.fill(
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            constraints: BoxConstraints.expand(),
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(231, 76, 60, 0.5),
-              borderRadius: BorderRadius.circular(20)
-            ),
+        if (denyStatus != null)
+          GestureDetector(
+            onTap: () {
+              updateStatusAction(orderItemId, denyStatus);
+            },
             child: Container(
-              child: Icon(
-                Icons.delete,
-                size: 35,
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              constraints: BoxConstraints.expand(),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(231, 76, 60, 0.5),
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Container(
+                child: Icon(
+                  Icons.delete,
+                  size: 35,
+                ),
               ),
             ),
           ),
-        ),
       ],
       child: Container(
         padding: EdgeInsets.all(16),
@@ -75,7 +94,7 @@ class OrderCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: NetworkImage("https://mcdn.coolmate.me/uploads/April2021/cs_dden_giua_nhe.jpg"),
+                      image: NetworkImage('http://$ip:$api_port/uploads/' + thumbnail),
                       fit: BoxFit.fill
                     )
                   ),
@@ -87,7 +106,7 @@ class OrderCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Áo phông coolmate",
+                          productName,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white,
@@ -96,7 +115,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "số lượng: 3",
+                          "số lượng: $amount",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white,
@@ -104,7 +123,7 @@ class OrderCard extends StatelessWidget {
                           )
                         ),
                         Text(
-                          "Đơn giá: 150.000 đ",
+                          "Đơn giá: $price",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white,
@@ -118,7 +137,7 @@ class OrderCard extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      '20/2/2021',
+                      date,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold

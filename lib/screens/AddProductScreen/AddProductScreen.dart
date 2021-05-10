@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
@@ -29,6 +30,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _vendor = new TextEditingController();
   final _description = new TextEditingController();
   String currentUserId = "608eb567489da0f52b6ec179";
+  List<dynamic> category = [];
 
   Future<void> _getAsset() async {
 
@@ -48,7 +50,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       List<String> listPaths = [];
       List<dynamic> files = value.data['files'];
       for(dynamic file in files) {
-        listPaths.add('http://${ip}:${api_port}/uploads/' + file['filename']);
+        listPaths.add(file['filename']);
       }
       setState(() {
         images = listPaths;
@@ -70,14 +72,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
     var response = await dio.post('http://${ip}:${api_port}/upload', data: formData).then((value) {
       List<dynamic> files = value.data['files'];
       setState(() {
-        thumbnail = 'http://${ip}:${api_port}/uploads/' + files[0]['filename'];
+        thumbnail = files[0]['filename'];
       });
     });
   }
 
   Future<List<Asset>> selectImagesFromGallery() async {
     return await MultiImagePicker.pickImages(
-      maxImages: 15,
+      maxImages: 12,
       enableCamera: true,
       materialOptions: MaterialOptions(
         actionBarColor: "#FF147cfa",
@@ -126,7 +128,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
           'thumbnail': thumbnail,
           'price': int.parse(_price.text),
           'unit': _unit.text,
-          'vendor': _vendor.text
+          'vendor': _vendor.text,
+          'categories': category
         }
       ).then((value) {
         final success = value.data['success'];
@@ -183,7 +186,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 )
               ),
-              
               SizedBox(height: 10),
               TextFormField(
                 controller: _price,
@@ -299,7 +301,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                     ),
                     child: Image(
-                      image: NetworkImage(thumbnail),
+                      image: NetworkImage('http://${ip}:${api_port}/uploads/' + thumbnail),
                       width: 90.0,
                       height: 90.0,
                     ),
@@ -357,7 +359,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                       ),
                       child: Image(
-                        image: NetworkImage(image),
+                        image: NetworkImage('http://${ip}:${api_port}/uploads/' + image),
                         width: 90.0,
                         height: 90.0,
                       ),
@@ -399,6 +401,68 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       child: Icon(Icons.add)
                     ),
                   ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                padding: EdgeInsets.all(16),
+                child: MultiSelectFormField(
+                  autovalidate: false,
+                  chipBackGroundColor: Colors.blue,
+                  chipLabelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                  checkBoxActiveColor: Colors.blue,
+                  checkBoxCheckColor: Colors.white,
+                  dialogShapeBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                  title: Text(
+                    "Danh mục",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.length == 0) {
+                      return 'Chọn danh muc cho sản phẩm';
+                    }
+                    return null;
+                  },
+                  dataSource: [
+                    {
+                      "display": "Trang phục",
+                      "value": "Trang phục",
+                    },
+                    {
+                      "display": "Đồ gia dụng",
+                      "value": "Đồ gia dụng",
+                    },
+                    {
+                      "display": "Thiết bị điện tử",
+                      "value": "Thiết bị điện tử",
+                    },
+                    {
+                      "display": "Trang sức",
+                      "value": "Trang sức",
+                    },
+                    {
+                      "display": "Đồ chơi",
+                      "value": "Đồ chơi",
+                    },
+                    {
+                      "display": "Khác",
+                      "value": "Khác",
+                    },
+                  ],
+                  textField: 'display',
+                  valueField: 'value',
+                  okButtonLabel: 'OK',
+                  cancelButtonLabel: 'CANCEL',
+                  hintWidget: Text('Please choose one or more'),
+                  initialValue: category,
+                  onSaved: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      category = value;
+                    });
+                  },
                 ),
               ),
             ]

@@ -13,17 +13,18 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           title: Text("Đơn hàng"),
           bottom: TabBar(
             isScrollable: true,
             tabs: [
-              Tab(text: "Chờ tiếp nhận"),
+              Tab(text: "Chờ tiếp nhận",),
               Tab(text: "Đã tiếp nhận"),
               Tab(text: "Đang vận chuyển"),
-              Tab(text: "Hoàn thành")
+              Tab(text: "Hoàn thành"),
+              Tab(text: "Đã từ chối")
             ],
           ),
         ),
