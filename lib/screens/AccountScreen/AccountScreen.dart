@@ -4,7 +4,8 @@ import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constaint.dart';
 
-class AccountScreen extends StatefulWidget {
+
+class AccountScreen extends StatelessWidget {
   static final routeName = '/account';
   AccountScreen({
     Key key,
@@ -16,14 +17,10 @@ class AccountScreen extends StatefulWidget {
     this.phoneNumber,
     this.address
   }) : super(key: key);
-
-  String fullname, username, gender, birthday, email, phoneNumber, address;
-
-  @override
-  _AccountScreenState createState() => _AccountScreenState();
-}
-
-class _AccountScreenState extends State<AccountScreen> {
+  final _fullname = new TextEditingController();
+  final _phoneNumber = new TextEditingController();
+  final _address = new TextEditingController();
+  String fullname = 'Lê Thị Thảo', username = '', gender, birthday, email, phoneNumber, address;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -213,7 +210,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 child: Column(
                                   children:[
                                     Container(
-                                      height: 350.0,
+                                      height: 300.0,
                                       child: Column(
                                         children: [
                                           TextFormField(
@@ -239,32 +236,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 ),
                                               )
                                           ),
-                                          SizedBox(
-                                            height: 20.0,
-                                          ),
-                                          TextFormField(
-                                              autofocus: false,
-                                              decoration: InputDecoration(
-                                                hintText: 'Email',
-                                                fillColor: Colors.white,
-                                                filled: true,
-                                                labelText: "Email",
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: BorderSide(
-                                                      color: Color.fromRGBO(127, 140, 141,1.0),
-                                                      width: 1.5
-                                                  ),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: BorderSide(
-                                                    color: Color.fromRGBO(46, 204, 113,1.0),
-                                                    width: 1.5,
-                                                  ),
-                                                ),
-                                              )
-                                          ),
+
                                           SizedBox(
                                             height: 20.0,
                                           ),
@@ -539,3 +511,5 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 }
+
+
