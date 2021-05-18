@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
 import 'package:seller_app/screens/RegisterScreen/RegisterScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constaint.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -16,21 +20,59 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  final _username = new TextEditingController();
+  final _phoneNumber = new TextEditingController();
   final _password = new TextEditingController();
 
+  SharedPreferences prefs;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+    });
+    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    super.initState();
+  }
+
+  var dio = new Dio();
+
   Future<void> loginUser() async {
-    if (_username.text == '' || _password.text == '' ) {
+    
+    if (_phoneNumber.text == '' || _password.text == '' ) {
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Vui lòng điền đầy đủ thông tin"),
+            title: Text("Please fullfill the form"),
             // content: Text(""),
           )
       );
     } else {
-      //add the post logic for login here
-      Navigator.pushNamed(context, HomeScreen.routeName);
+      dio.post('$api_url/seller/login', data: {
+        'phone': _phoneNumber.text,
+        'password': _password.text
+      }).then((value) {
+        if (value.data['success']) {
+          prefs.setString('sellerId', value.data['_id']);
+          prefs.setString('username', value.data['username']);
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(value.data['msg']),
+            )
+          );
+        }
+      }).catchError((e) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Error"),
+          )
+        );
+      });
+      
     }
   }
 
@@ -51,13 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20),
               TextFormField(
-                  controller: _username,
+                  controller: _phoneNumber,
                   autofocus: false,
                   decoration: InputDecoration(
-                    hintText: 'Tên đăng nhập',
+                    hintText: 'Số điện thoại',
                     fillColor: Colors.white,
                     filled: true,
-                    labelText: "Tên đăng nhập",
+                    labelText: "Số điệnt thoại",
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
@@ -133,44 +175,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: 5,),
-
-              Divider(
-                height: 8.0,
-                color: Colors.black,
-              ),
-              SizedBox(height: 15,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Đăng nhập với", style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal, color: Colors.black),),
-                ],
-              ),
-
-              SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    onPressed: (){
-                      print("ok");
-                    },
-                    child: Image(
-                      image: AssetImage('images/Google-2.png'),
-                      height: 55,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: (){
-                      print("ok");
-                    },
-                    child: Image(
-                      image: AssetImage('images/Facebook-2.png'),
-                      height: 55,
-                    ),
-                  ),
-                ],
-              )
-
             ],
           ),
         ),

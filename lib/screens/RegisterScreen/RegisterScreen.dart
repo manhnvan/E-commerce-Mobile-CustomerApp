@@ -1,8 +1,8 @@
-import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:seller_app/components/BottomNavBar.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:seller_app/screens/LoginScreen/LoginScreen.dart';
+
+import '../../constaint.dart';
 
 class RegisterScreen extends StatefulWidget {
   static final routeName = '/register';
@@ -21,14 +21,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _password = new TextEditingController();
   final _reenterPassword = new TextEditingController();
 
+  var dio = Dio();
+
 
   Future<void> register() async {
-    if (_fullname.text == '' || _email.text == ''|| _username.text ==''|| _phoneNumber.text =='' || _address.text==''|| _password.text==''||_reenterPassword.text=='' ) {
+    if (_username.text ==''|| _phoneNumber.text =='' || _address.text==''|| _password.text==''|| _reenterPassword.text=='' ) {
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: Text("Vui lòng điền đầy đủ thông tin"),
-            // content: Text(""),
           )
       );
     } else if(_password.text != _reenterPassword.text){
@@ -36,14 +37,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: Text("Mật khẩu không trùng khớp"),
-            // content: Text(""),
           )
       );
 
     }
     else {
-      //add the post logic for login here
-      Navigator.pushNamed(context, LoginScreen.routeName);
+      dio.post(
+        '$api_url/seller/create', 
+        data: {
+          "username": _username.text,
+          "phone": _phoneNumber.text,
+          "address": _address.text,
+          "password": _password.text
+        }
+      ).then((value) {
+        if (value.data['success']) {
+          Navigator.pushNamed(context, LoginScreen.routeName);
+        }
+        else {
+          showDialog(context: context, builder: (context) => AlertDialog(
+            title: Text(value.data['msg']),
+          ));
+        }
+      }).catchError((e) {
+        print(e);
+      });
     }
   }
 
@@ -60,57 +78,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: EdgeInsets.all(10),
           child: Column(
               children: [
-
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _fullname,
-                    autofocus: false,
-                    decoration: InputDecoration(
-                      hintText: 'Họ tên',
-                      fillColor: Colors.white,
-                      filled: true,
-                      labelText: "Họ tên",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(
-                            color: Color.fromRGBO(127, 140, 141,1.0),
-                            width: 1.5
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(
-                          color: Color.fromRGBO(46, 204, 113,1.0),
-                          width: 1.5,
-                        ),
-                      ),
-                    )
-                ),
-
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: _email,
-                    autofocus: false,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      fillColor: Colors.white,
-                      filled: true,
-                      labelText: "Email",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(
-                            color: Color.fromRGBO(127, 140, 141,1.0),
-                            width: 1.5
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(
-                          color: Color.fromRGBO(46, 204, 113,1.0),
-                          width: 1.5,
-                        ),
-                      ),
-                    )
+                SizedBox(height: 20),
+                Image(
+                    image: AssetImage('images/logo.png'),
+                    height:180 ,
                 ),
                 SizedBox(height: 10),
                 TextFormField(

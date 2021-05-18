@@ -43,7 +43,7 @@ class _ChatBoxState extends State<ChatBox> {
             topic = args.topic;
             chatboxId = args.chatboxId;
           });
-          dio.get('http://${ip}:${chat_port}/message/${chatboxId}/0').then((value) {
+          dio.get('$chat_url/message/${chatboxId}/0').then((value) {
             if (value.data['success']) {
               setState(() {
                 messages.addAll(value.data['messages']);
@@ -51,7 +51,7 @@ class _ChatBoxState extends State<ChatBox> {
               _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
             }
           });
-          socket = IO.io('http://172.28.16.1:3002', <String, dynamic> {
+          socket = IO.io('$chat_url', <String, dynamic> {
             'transports': ['websocket'],
             'autoConnect': false,
           });
