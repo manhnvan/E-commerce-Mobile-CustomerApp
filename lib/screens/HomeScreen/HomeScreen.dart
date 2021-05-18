@@ -16,10 +16,6 @@ class HomeScreen extends StatelessWidget {
         ),
         body: ListView(
           children: [
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text("Các sản phẩm có trong cửa hàng", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
-            ),
             Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
