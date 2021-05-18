@@ -58,7 +58,7 @@ class ProductDetail extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("74 Đánh giá", style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal) ,),
+                    Text("300.000đ", style:TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold) ,),
                     // ElevatedButton.icon(
                     //     onPressed: (){},
                     //     label: Text("Đánh giá"),
@@ -83,6 +83,7 @@ class ProductDetail extends StatelessWidget {
                   ],
                 )
             ),
+
             Container(
               padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Row(
@@ -90,7 +91,7 @@ class ProductDetail extends StatelessWidget {
                 children:[
                   Text("No brand", style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal) ,),
                   SizedBox(width: 30.0,),
-                  Text("300.000đ",style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal) , ),
+                  // Text("300.000đ",style:TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal) , ),
                 ], ),
             ),
             Padding(
