@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:seller_app/screens/ChatScreen/Chatbox.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constaint.dart';
 
@@ -17,17 +18,22 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<dynamic> chatboxes = <dynamic>[];
   var dio = Dio();
-  String currentUserId = "608eb567489da0f52b6ec179";
+  SharedPreferences prefs;
+  String currentUserId;
 
   @override
   void initState() {
-    dio.get('http://${ip}:${chat_port}/${currentUserId}/').then((value) {
-      if (value.data['success']) {
-        setState(() {
-          chatboxes.addAll(value.data['chatboxes']);
-        });
-        // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      }
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+      currentUserId = prefs.getString('sellerId');
+      dio.get('$chat_url/${currentUserId}/').then((value) {
+        if (value.data['success']) {
+          print(value.data);
+          setState(() {
+            chatboxes.addAll(value.data['chatboxes']);
+          });
+        }
+      });
     });
   }
 

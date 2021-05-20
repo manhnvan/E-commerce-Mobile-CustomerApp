@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:seller_app/components/BottomNavBar.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
 import 'package:seller_app/screens/RegisterScreen/RegisterScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences.getInstance().then((value) {
       prefs = value;
     });
-    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
     super.initState();
   }
 
@@ -55,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (value.data['success']) {
           prefs.setString('sellerId', value.data['_id']);
           prefs.setString('username', value.data['username']);
-          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName,  (Route<dynamic> route) => false,);
         } else {
           showDialog(
             context: context,

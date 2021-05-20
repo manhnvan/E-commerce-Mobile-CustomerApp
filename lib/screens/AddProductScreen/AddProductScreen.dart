@@ -1,3 +1,5 @@
+
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -7,7 +9,8 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
+import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constaint.dart';
 
@@ -29,28 +32,54 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _unit = new TextEditingController();
   final _vendor = new TextEditingController();
   final _description = new TextEditingController();
-  String currentUserId = "608eb567489da0f52b6ec179";
+  String currentUserId;
   List<dynamic> category = [];
+
+  SharedPreferences prefs;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+      currentUserId = prefs.getString('sellerId');
+    });
+    super.initState();
+  }
 
   Future<void> _getAsset() async {
 
     List<Asset> assets = await selectImagesFromGallery();
-    List<MultipartFile> files = [];
+    List<Future> futures = [];
     for (Asset asset in assets) {
       final filePath = await FlutterAbsolutePath.getAbsolutePath(asset.identifier);
-      final multipart = await MultipartFile.fromFile(filePath, filename: 'asset_image.' + filePath.split(".").last);
-      files.add(multipart);
+      var formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(filePath),
+      });
+      futures.add(
+        dio.post(
+          '$imgur_url', 
+          data: formData, 
+          options: Options(
+            headers: {
+              Headers.wwwAuthenticateHeader: 'Client-ID $clientId',
+              'Accept': "*/*"
+            }
+          )
+        )
+      );
     }
     if (!mounted) return;
-    var listImage = [];
-    var formData = FormData.fromMap({
-      'images': files
-    });
-    var response = await dio.post('http://${ip}:${api_port}/upload', data: formData).then((value) {
+
+    Future.wait(futures).then((value) {
       List<String> listPaths = [];
-      List<dynamic> files = value.data['files'];
-      for(dynamic file in files) {
-        listPaths.add(file['filename']);
+      for (dynamic res in value) {
+        final Map mapResponse = json.decode(res.toString());
+        if (mapResponse['success']) {
+          final Map data = mapResponse['data'];
+          print(data);
+          listPaths.add(data['link']);
+        }
       }
       setState(() {
         images = listPaths;
@@ -65,21 +94,29 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if (!mounted) return;
     print(thumbnailImage);
     var formData = FormData.fromMap({
-      'images': [
-        await MultipartFile.fromFile(thumbnailImage, filename: 'thumbnail_image.' + thumbnailImage.split(".").last),
-      ]
+      'image': await MultipartFile.fromFile(thumbnailImage),
     });
-    var response = await dio.post('http://${ip}:${api_port}/upload', data: formData).then((value) {
-      List<dynamic> files = value.data['files'];
-      setState(() {
-        thumbnail = files[0]['filename'];
-      });
+    dio.post('$imgur_url', data: formData, options: Options(
+      headers: {
+        Headers.wwwAuthenticateHeader: 'Client-ID $clientId',
+        'Accept': "*/*"
+      }
+    )).then((value) {
+      if (value.data['success']) {
+        dynamic data = value.data['data'];
+        print(data['link']);
+        setState(() {
+          thumbnail = data['link'];
+        });
+      }
+    }).catchError((e) {
+      print(e.toString());
     });
   }
 
   Future<List<Asset>> selectImagesFromGallery() async {
     return await MultiImagePicker.pickImages(
-      maxImages: 12,
+      maxImages: 10,
       enableCamera: true,
       materialOptions: MaterialOptions(
         actionBarColor: "#FF147cfa",
@@ -118,12 +155,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
       );
     } else {
       dio.post(
-        'http://${ip}:${api_port}/product/create', 
+        '$api_url/product/create', 
         data: {
           'sellerId': currentUserId,
           'productName': _productName.text,
           'description': _description.text,
-          'categories': [],
           'productImages': images,
           'thumbnail': thumbnail,
           'price': int.parse(_price.text),
@@ -137,11 +173,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text("Đăng bán sản phẩm thành công"),
+              title: Text(value.data['msg']),
             )
           );
         } else {
-          Navigator.pushNamed(context, OrderScreen.routeName);
+          Navigator.pushNamed(context, HomeScreen.routeName);
         }
       });
     }
@@ -301,7 +337,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                     ),
                     child: Image(
-                      image: NetworkImage('http://${ip}:${api_port}/uploads/' + thumbnail),
+                      image: NetworkImage(thumbnail),
                       width: 90.0,
                       height: 90.0,
                     ),
@@ -359,7 +395,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                       ),
                       child: Image(
-                        image: NetworkImage('http://${ip}:${api_port}/uploads/' + image),
+                        image: NetworkImage(image),
                         width: 90.0,
                         height: 90.0,
                       ),

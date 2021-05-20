@@ -43,7 +43,7 @@ class _ChatBoxState extends State<ChatBox> {
             topic = args.topic;
             chatboxId = args.chatboxId;
           });
-          dio.get('$chat_url/message/${chatboxId}/0').then((value) {
+          dio.get('$chat_url/message/$chatboxId/0').then((value) {
             if (value.data['success']) {
               setState(() {
                 messages.addAll(value.data['messages']);

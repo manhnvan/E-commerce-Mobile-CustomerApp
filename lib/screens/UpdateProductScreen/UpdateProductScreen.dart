@@ -1,12 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
 import 'package:seller_app/screens/OrderScreen/OrderScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constaint.dart';
 
@@ -25,32 +30,68 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   final ImagePicker _picker = ImagePicker();
   String _error = 'No Error Dectected';
   var dio = Dio();
-  final _productName = new TextEditingController(text:"điển tên sản phẩm");
-  final _price = new TextEditingController();
-  final _unit = new TextEditingController();
-  final _vendor = new TextEditingController();
-  final _description = new TextEditingController();
-  String currentUserId = "608eb567489da0f52b6ec179";
+  TextEditingController _productName, _price, _unit, _vendor, _description;
+  String productId;
+  SharedPreferences prefs;
+  List<dynamic> category = [];
+
+  @override
+  void initState() {
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+    });
+    Future.delayed(Duration.zero, () {
+        dynamic data = ModalRoute.of(context).settings.arguments;
+        List<dynamic> listImgs = data['productImages'];
+        setState(() {
+          productId = data['_id'];
+          thumbnail = data['thumbnail'];
+          images = listImgs.map((e) => e.toString()).toList();
+          category = data['categories'];
+          _productName = new TextEditingController(text: data['productName']);
+          _price = new TextEditingController(text: data['price'].toString());
+          _unit = new TextEditingController(text: data['unit']);
+          _vendor = new TextEditingController(text: data['vendor']);
+          _description = new TextEditingController(text: data['description']);
+        });
+        
+      }
+    );
+  }
 
   Future<void> _getAsset() async {
 
     List<Asset> assets = await selectImagesFromGallery();
-    List<MultipartFile> files = [];
+    List<Future> futures = [];
     for (Asset asset in assets) {
       final filePath = await FlutterAbsolutePath.getAbsolutePath(asset.identifier);
-      final multipart = await MultipartFile.fromFile(filePath, filename: 'asset_image.' + filePath.split(".").last);
-      files.add(multipart);
+      var formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(filePath),
+      });
+      futures.add(
+        dio.post(
+          '$imgur_url', 
+          data: formData, 
+          options: Options(
+            headers: {
+              Headers.wwwAuthenticateHeader: 'Client-ID $clientId',
+              'Accept': "*/*"
+            }
+          )
+        )
+      );
     }
     if (!mounted) return;
-    var listImage = [];
-    var formData = FormData.fromMap({
-      'images': files
-    });
-    var response = await dio.post('http://${ip}:${api_port}/upload', data: formData).then((value) {
+
+    Future.wait(futures).then((value) {
       List<String> listPaths = [];
-      List<dynamic> files = value.data['files'];
-      for(dynamic file in files) {
-        listPaths.add('http://${ip}:${api_port}/uploads/' + file['filename']);
+      for (dynamic res in value) {
+        final Map mapResponse = json.decode(res.toString());
+        if (mapResponse['success']) {
+          final Map data = mapResponse['data'];
+          print(data);
+          listPaths.add(data['link']);
+        }
       }
       setState(() {
         images = listPaths;
@@ -65,21 +106,29 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     if (!mounted) return;
     print(thumbnailImage);
     var formData = FormData.fromMap({
-      'images': [
-        await MultipartFile.fromFile(thumbnailImage, filename: 'thumbnail_image.' + thumbnailImage.split(".").last),
-      ]
+      'image': await MultipartFile.fromFile(thumbnailImage),
     });
-    var response = await dio.post('http://${ip}:${api_port}/upload', data: formData).then((value) {
-      List<dynamic> files = value.data['files'];
-      setState(() {
-        thumbnail = 'http://${ip}:${api_port}/uploads/' + files[0]['filename'];
-      });
+    dio.post('$imgur_url', data: formData, options: Options(
+      headers: {
+        Headers.wwwAuthenticateHeader: 'Client-ID $clientId',
+        'Accept': "*/*"
+      }
+    )).then((value) {
+      if (value.data['success']) {
+        dynamic data = value.data['data'];
+        print(data['link']);
+        setState(() {
+          thumbnail = data['link'];
+        });
+      }
+    }).catchError((e) {
+      print(e.toString());
     });
   }
 
   Future<List<Asset>> selectImagesFromGallery() async {
     return await MultiImagePicker.pickImages(
-      maxImages: 15,
+      maxImages: 10,
       enableCamera: true,
       materialOptions: MaterialOptions(
         actionBarColor: "#FF147cfa",
@@ -117,10 +166,10 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           )
       );
     } else {
-      dio.post(
-          'http://${ip}:${api_port}/product/create',
+      dio.put(
+          'http://${ip}:${api_port}/product/$productId',
           data: {
-            'sellerId': currentUserId,
+            'sellerId': prefs.getString('sellerId'),
             'productName': _productName.text,
             'description': _description.text,
             'categories': [],
@@ -128,19 +177,21 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
             'thumbnail': thumbnail,
             'price': int.parse(_price.text),
             'unit': _unit.text,
-            'vendor': _vendor.text
+            'vendor': _vendor.text,
+            'categories': category
           }
       ).then((value) {
         final success = value.data['success'];
         if (!success) {
+          print( value.data['msg']);
           showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text("Đăng bán sản phẩm thành công"),
+                title: Text("Update product fail"),
               )
           );
         } else {
-          Navigator.pushNamed(context, OrderScreen.routeName);
+          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (Route<dynamic> route) => false,);
         }
       });
     }
@@ -149,11 +200,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   @override
   Widget build(BuildContext context) {
     //after get the data from get request, set the text for all variables like below so that the old data can be display in the update site
-    _productName.text = "Tên sản phẩm cũ";
-    _price.text = "1234";
-    _unit.text = "đơn vị cũ";
-    _vendor.text= "tên thương hiệu cũ";
-    _description.text = "mô tả cũ";
     //the data of the product can be set here
     return Scaffold(
       appBar: AppBar(
@@ -421,6 +467,43 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  child: MultiSelectFormField(
+                    autovalidate: false,
+                    chipBackGroundColor: Colors.blue,
+                    chipLabelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                    dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                    checkBoxActiveColor: Colors.blue,
+                    checkBoxCheckColor: Colors.white,
+                    dialogShapeBorder: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                    title: Text(
+                      "Danh mục",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.length == 0) {
+                        return 'Chọn danh muc cho sản phẩm';
+                      }
+                      return null;
+                    },
+                    dataSource: categories_list,
+                    textField: 'display',
+                    valueField: 'value',
+                    okButtonLabel: 'OK',
+                    cancelButtonLabel: 'CANCEL',
+                    hintWidget: Text('Please choose one or more'),
+                    initialValue: category,
+                    onSaved: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        category = value;
+                      });
+                    },
+                  ),
+                ),
               ]
           ),
         ),
@@ -429,7 +512,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         onPressed: uploadProduct,
         child: const Icon(Icons.cloud_upload),
       ),
-      bottomNavigationBar: BottomNavBar(2),
     );
   }
 }
