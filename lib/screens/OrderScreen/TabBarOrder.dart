@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seller_app/screens/OrderScreen/components/OrderCard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constaint.dart';
 
@@ -64,33 +65,23 @@ class ListOrderItems extends StatefulWidget {
 class _ListOrderItemsState extends State<ListOrderItems> {
   final dio = new Dio();
   List<dynamic> items = <dynamic>[];
-  final sellerId = "6091721698d3fc0dd03d08a7";
+  SharedPreferences prefs;
 
   String status, nextStepStatus, denyStatus;
+  String sellerId;
 
   @override
   void initState() {
     // TODO: implement initState
-    status = widget.status;
-    nextStepStatus = widget.nextStepStatus;
-    denyStatus = widget.denyStatus;
     super.initState();
-    dio.get('http://$ip:$api_port/order/item/$sellerId/$status').then((value) {
-      if (value.data['success']) {
-        if(mounted) {
-          setState(() {
-            items = value.data['items'];
-          });
-        } 
-      }
-    });
-  }
-
-  void _removeFormList(String orderItemId, String curentStatus) async {
-    await dio.put('http://$ip:$api_port/order/updateOrderItemStatus/$orderItemId', data: {
-      "status": curentStatus
-    });
-    dio.get('http://$ip:$api_port/order/item/$sellerId/$status').then((value) {
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+      sellerId = prefs.getString('sellerId');
+      status = widget.status;
+      nextStepStatus = widget.nextStepStatus;
+      denyStatus = widget.denyStatus;
+      
+      dio.get('$api_url/order/item/seller/$sellerId/$status').then((value) {
         if (value.data['success']) {
           if(mounted) {
             setState(() {
@@ -99,6 +90,23 @@ class _ListOrderItemsState extends State<ListOrderItems> {
           } 
         }
       });
+    });
+  }
+
+  void _removeFormList(String orderItemId, String curentStatus) async {
+    await dio.put('$api_url/order/updateOrderItemStatus/$orderItemId', data: {
+      "status": curentStatus
+    });
+    dio.get('$api_url/order/item/seller/$sellerId/$status').then((value) {
+      print(value.data);
+      if (value.data['success']) {
+        if(mounted) {
+          setState(() {
+            items = value.data['items'];
+          });
+        } 
+      }
+    });
   }
   
   @override

@@ -94,7 +94,7 @@ class OrderCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: NetworkImage('$api_url/uploads/$thumbnail'),
+                      image: NetworkImage(thumbnail),
                       fit: BoxFit.fill
                     )
                   ),
