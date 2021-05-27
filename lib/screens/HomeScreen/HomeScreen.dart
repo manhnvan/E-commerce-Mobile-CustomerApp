@@ -25,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     SharedPreferences.getInstance().then((value) {
       prefs = value;
       currentUserId = prefs.getString('sellerId');
@@ -55,8 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: NewGradientAppBar(
             title: Text("Gian hàng của bạn"), gradient: color_gradient_primary, leading: null),
         body: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: space_big, horizontal: space_small),
+          padding: EdgeInsets.only(
+              top: space_big, left: space_small, right: space_small),
           child: ListView.builder(
             itemCount: products.length,
             itemBuilder: (context, index) {
