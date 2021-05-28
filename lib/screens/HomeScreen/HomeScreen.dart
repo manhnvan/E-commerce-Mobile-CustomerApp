@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:seller_app/abstracts/colors.dart';
+import 'package:seller_app/abstracts/variables.dart';
 import 'package:seller_app/components/BottomNavBar.dart';
 import 'package:seller_app/constaint.dart';
 import 'package:seller_app/screens/HomeScreen/components/ProductCard.dart';
@@ -23,22 +25,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     SharedPreferences.getInstance().then((value) {
       prefs = value;
       currentUserId = prefs.getString('sellerId');
-      dio.get('$api_url/product?page=$page&limit=$limit&sellerId=$currentUserId').then((value) {
+      dio
+          .get(
+              '$api_url/product?page=$page&limit=$limit&sellerId=$currentUserId')
+          .then((value) {
         if (value.data['success']) {
           setState(() {
             products = value.data['docs'];
           });
         } else {
           showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text(value.data['msg']),
-            )
-          );
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: Text(value.data['msg']),
+                  ));
         }
       });
     });
@@ -48,28 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Gian hàng", textAlign: TextAlign.center,),
-        ),
+        appBar: NewGradientAppBar(
+            title: Text("Gian hàng của bạn"), gradient: color_gradient_primary, leading: null),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.only(
+              top: space_big, left: space_small, right: space_small),
           child: ListView.builder(
             itemCount: products.length,
             itemBuilder: (context, index) {
               dynamic item = products[index];
               return ProductCard(
-                productId: item['_id'],
-                productName: item['productName'],
-                image: item['thumbnail'],
-                price: item['price'],
-                vendor: item['vendor'],
-                rate: item['rating'].toDouble(),
-                like: item['like']
-              );
+                  productId: item['_id'],
+                  productName: item['productName'],
+                  image: item['thumbnail'],
+                  price: item['price'],
+                  vendor: item['vendor'],
+                  rate: item['rating'].toDouble(),
+                  like: item['like']);
             },
           ),
         ),
-        bottomNavigationBar:BottomNavBar(0)
-    );
+        bottomNavigationBar: BottomNavBar(0));
   }
 }

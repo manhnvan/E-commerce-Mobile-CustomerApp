@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seller_app/abstracts/theme.dart';
 import 'package:seller_app/screens/AccountScreen/AccountScreen.dart';
 import 'package:seller_app/screens/AddProductScreen/AddProductScreen.dart';
 import 'package:seller_app/screens/ChatScreen/ChatScreen.dart';
@@ -20,9 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: EzTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: LoginScreen.routeName,
       routes: {
