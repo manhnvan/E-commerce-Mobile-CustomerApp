@@ -14,11 +14,18 @@ const double border_radius_huge = 60.0;
 
 const double icon_size = 30.0;
 
-const BorderRadius cardShape = BorderRadius.only(
+const BorderRadius card_shape_primary = BorderRadius.only(
   topLeft: Radius.circular(border_radius_small),
   topRight: Radius.circular(border_radius_big),
   bottomRight: Radius.circular(border_radius_small),
   bottomLeft: Radius.circular(border_radius_big),
+);
+
+const BorderRadius card_shape_secondary = BorderRadius.only(
+  topLeft: Radius.circular(border_radius_huge),
+  topRight: Radius.circular(border_radius_big),
+  bottomRight: Radius.circular(border_radius_small),
+  bottomLeft: Radius.circular(border_radius_huge),
 );
 
 const BoxShadow box_shadow_black = BoxShadow(

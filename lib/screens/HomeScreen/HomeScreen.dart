@@ -52,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: NewGradientAppBar(
-            title: Text("Gian hàng của bạn"), gradient: color_gradient_primary, leading: null),
+            title: Text("Gian hàng của bạn"),
+            gradient: color_gradient_primary,
+        automaticallyImplyLeading: false),
         body: Padding(
           padding: EdgeInsets.only(
               top: space_big, left: space_small, right: space_small),
