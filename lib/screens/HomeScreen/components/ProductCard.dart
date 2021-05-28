@@ -31,7 +31,7 @@ class ProductCard extends StatelessWidget {
             arguments: {"productId": productId});
       },
       child: ClipRRect(
-        borderRadius: cardShape,
+        borderRadius: card_shape_primary,
         clipBehavior: Clip.antiAlias,
         child: Container(
             margin: EdgeInsets.only(bottom: space_medium),
@@ -43,7 +43,7 @@ class ProductCard extends StatelessWidget {
                 boxShadow: [box_shadow_black]),
             child: Container(
               decoration:
-                  BoxDecoration(borderRadius: cardShape, color: color_white),
+                  BoxDecoration(borderRadius: card_shape_primary, color: color_white),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 //This is the product thumbnail :v
                 Container(

@@ -187,6 +187,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       appBar: NewGradientAppBar(
         title: Text("Thêm sản phẩm"),
         gradient: color_gradient_primary,
+          automaticallyImplyLeading: false
       ),
       body: SingleChildScrollView(
         reverse: true,

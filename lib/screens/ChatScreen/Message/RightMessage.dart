@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
+import 'package:seller_app/abstracts/colors.dart';
+import 'package:seller_app/abstracts/variables.dart';
 
 class RightMessage extends StatelessWidget {
   const RightMessage({
@@ -15,53 +20,23 @@ class RightMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width * 0.75,
+          ChatBubble(
+            clipper: ChatBubbleClipper6(type: BubbleType.sendBubble),
+            alignment: Alignment.topRight,
+            elevation: 10,
+            margin: EdgeInsets.symmetric(vertical: space_small),
+            backGroundColor: color_primary,
             child: Container(
-              alignment: Alignment.topRight,
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(22, 160, 133, 0.7),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5
-                  )
-                ]
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               child: Text(
                 message['content'],
-                style: TextStyle(
-                  color: Colors.white,
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  fontSize: 16
                 ),
-                textAlign: TextAlign.justify,
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: 2,
-                color: Color.fromRGBO(22, 160, 133,1.0)
-              ),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 2,
-                  blurRadius: 5
-                )
-              ]
-            ),
-            child: CircleAvatar(
-              radius: MediaQuery.of(context).size.width * 0.05,
-              backgroundImage: NetworkImage('https://mcdn.coolmate.me/uploads/March2021/DAI041214_60_550x623.jpg')
-            )
           )
         ],
       )

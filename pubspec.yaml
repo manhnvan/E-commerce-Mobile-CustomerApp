@@ -39,6 +39,7 @@ dependencies:
   multiselect_formfield: ^0.1.6
   shared_preferences: ^2.0.5
   new_gradient_app_bar: ^0.2.0
+  flutter_chat_bubble: ^1.0.2
 
 dev_dependencies:
   flutter_test:
