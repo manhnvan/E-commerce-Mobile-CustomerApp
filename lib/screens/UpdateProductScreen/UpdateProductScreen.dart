@@ -166,7 +166,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                 // content: Text(""),
               ));
     } else {
-      dio.put('http://$ip:$api_port/product/$productId', data: {
+      dio.put('$api_url/product/$productId', data: {
         'sellerId': prefs.getString('sellerId'),
         'productName': _productName.text,
         'description': _description.text,
