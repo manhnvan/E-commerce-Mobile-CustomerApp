@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
 import 'package:seller_app/screens/HomeScreen/ProductDetail.dart';
+import 'package:seller_app/screens/UpdateProductScreen/UpdateProductScreen.dart';
 
 // ignore: must_be_immutable
 class ProductCard extends StatelessWidget {
@@ -15,13 +16,16 @@ class ProductCard extends StatelessWidget {
       this.vendor,
       this.sold,
       this.rate,
-      this.like})
+      this.like,
+      this.product
+    })
       : super(key: key);
 
   String productName, image, vendor, productId;
   int price, sold;
   double rate;
   int like;
+  dynamic product;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +83,10 @@ class ProductCard extends StatelessWidget {
                       children: [
                         //Edit button :3
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(context, UpdateProductScreen.routeName,
+                              arguments: product);
+                          },
                           child: Container(
                               margin: EdgeInsets.only(right: space_medium),
                               padding: EdgeInsets.symmetric(

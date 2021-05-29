@@ -37,6 +37,8 @@ class _ProductDetailState extends State<ProductDetail> {
 
   String productId;
 
+  bool isLoading = true;
+
   var dio = new Dio();
 
   @override
@@ -59,6 +61,7 @@ class _ProductDetailState extends State<ProductDetail> {
             price = product['price'].toDouble();
             rating = product['rating'].toDouble();
             like = product['like'].toDouble();
+            isLoading = false;
           });
         }
       });
@@ -112,7 +115,7 @@ class _ProductDetailState extends State<ProductDetail> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: isLoading ? Container() : SingleChildScrollView(
         child: Column(
           children: [
             //Images carousel here :)

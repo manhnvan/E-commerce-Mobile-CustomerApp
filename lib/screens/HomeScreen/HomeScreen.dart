@@ -63,13 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               dynamic item = products[index];
               return ProductCard(
-                  productId: item['_id'],
-                  productName: item['productName'],
-                  image: item['thumbnail'],
-                  price: item['price'],
-                  vendor: item['vendor'],
-                  rate: item['rating'].toDouble(),
-                  like: item['like']);
+                productId: item['_id'],
+                productName: item['productName'],
+                image: item['thumbnail'],
+                price: item['price'],
+                vendor: item['vendor'],
+                rate: item['rating'].toDouble(),
+                like: item['like'],
+                product: item
+              );
+                  
             },
           ),
         ),
