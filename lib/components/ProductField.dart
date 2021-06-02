@@ -7,10 +7,9 @@ class ProductField extends StatelessWidget {
   String productName;
   var controller;
   TextInputType keyboardType;
-  int maxLines;
 
   ProductField(
-      this.productName, this.controller, this.keyboardType, this.maxLines);
+      this.productName, this.controller, this.keyboardType);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class ProductField extends StatelessWidget {
             controller: this.controller,
             keyboardType: this.keyboardType,
             autofocus: false,
-            maxLines: this.maxLines,
+            maxLines: null,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,

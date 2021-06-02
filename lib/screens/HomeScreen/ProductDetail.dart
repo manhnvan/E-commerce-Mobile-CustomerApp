@@ -88,7 +88,11 @@ class _ProductDetailState extends State<ProductDetail> {
 
     return Scaffold(
       appBar: NewGradientAppBar(
-        title: Text("Chi tiết sản phẩm"),
+        title: Text("Chi tiết sản phẩm",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                .copyWith(color: color_white)),
         gradient: color_gradient_primary,
         actions: [
           //Edit functionality here :v
@@ -98,9 +102,9 @@ class _ProductDetailState extends State<ProductDetail> {
                   arguments: product);
             },
             child: Container(
-              padding: EdgeInsets.only(right: 10),
+              padding: EdgeInsets.only(right: space_medium),
               child: Icon(
-                Icons.edit,
+                Icons.edit_rounded,
               ),
             ),
           ),
@@ -111,166 +115,169 @@ class _ProductDetailState extends State<ProductDetail> {
               print('tapping delete');
             },
             child: Container(
-                padding: EdgeInsets.only(right: 10), child: Icon(Icons.delete)),
+                padding: EdgeInsets.only(right: space_medium),
+                child: Icon(Icons.delete_rounded)),
           ),
         ],
       ),
-      body: isLoading ? Container() : SingleChildScrollView(
-        child: Column(
-          children: [
-            //Images carousel here :)
-            imageCarousel,
+      body: isLoading
+          ? Container()
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  //Images carousel here :)
+                  imageCarousel,
 
-            Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: space_huge, horizontal: space_medium),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //Product's name here :>
-                      Text('$productName',
-                          style: Theme.of(context).textTheme.headline5),
+                  Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: space_huge, horizontal: space_medium),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //Product's name here :>
+                            Text('$productName',
+                                style: Theme.of(context).textTheme.headline5),
 
-                      SizedBox(height: space_medium),
+                            SizedBox(height: space_medium),
 
-                      //Product's vendor here :v
-                      Text('Nhà sản xuất: $vendor',
-                          style: Theme.of(context).textTheme.headline6),
+                            //Product's vendor here :v
+                            Text('Nhà sản xuất: $vendor',
+                                style: Theme.of(context).textTheme.headline6),
 
-                      SizedBox(height: space_small),
+                            SizedBox(height: space_small),
 
-                      //Product's categories here :)
-                      Wrap(
-                        children: categories
-                            .map((category) => Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: space_small,
-                                      horizontal: space_medium),
-                                  margin: EdgeInsets.only(
-                                      right: space_small, bottom: space_small),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(1000),
-                                      gradient: color_gradient_dark),
-                                  child: Text(
-                                    category,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText2
-                                        .copyWith(
-                                            color: color_white, fontSize: 15),
-                                  ),
-                                ))
-                            .toList(),
-                      )
-                    ])),
+                            //Product's categories here :)
+                            Wrap(
+                              children: categories
+                                  .map((category) => Container(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: space_small,
+                                            horizontal: space_medium),
+                                        margin: EdgeInsets.only(
+                                            right: space_small,
+                                            bottom: space_small),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(1000),
+                                            gradient: color_gradient_dark),
+                                        child: Text(
+                                          category,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2
+                                              .copyWith(
+                                                  color: color_white,
+                                                  fontSize: 15),
+                                        ),
+                                      ))
+                                  .toList(),
+                            )
+                          ])),
 
-            Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: space_big, horizontal: space_medium),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //Price panel here :<
-                    Transform.translate(
-                      offset: Offset(-space_medium, 0),
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(space_medium, space_medium,
-                            space_big, space_medium),
-                        decoration: BoxDecoration(
-                            gradient: color_gradient_dark,
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(border_radius_huge),
-                                bottomRight:
-                                    Radius.circular(border_radius_huge)),
-                            boxShadow: [box_shadow_black]),
-                        child: Text(
-                          widget.currencyFormatter.format(price) + "đ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              .copyWith(color: color_white),
-                        ),
-                      ),
-                    ),
-
-                    //This column contains number of ratings and likes~~
-                    Column(
-                      children: [
-                        //Number of ratings~~
-                        Container(
-                          child: Row(
-                            children: [
-                              //Rating icon~~
-                              Container(
-                                margin: EdgeInsets.only(right: space_small),
-                                child: Icon(Icons.stars_rounded,
-                                    color: color_green_dark),
+                  Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: space_big, horizontal: space_medium),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //Price panel here :<
+                          Transform.translate(
+                            offset: Offset(-space_medium, 0),
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(space_medium,
+                                  space_medium, space_big, space_medium),
+                              decoration: BoxDecoration(
+                                  gradient: color_gradient_dark,
+                                  borderRadius: BorderRadius.only(
+                                      topRight:
+                                          Radius.circular(border_radius_huge),
+                                      bottomRight:
+                                          Radius.circular(border_radius_huge)),
+                                  boxShadow: [box_shadow_black]),
+                              child: Text(
+                                widget.currencyFormatter.format(price) + "đ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    .copyWith(color: color_white),
                               ),
-
-                              //Rating text~~
-                              Text('$rating',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      .copyWith(fontSize: 20))
-                            ],
+                            ),
                           ),
-                        ),
 
-                        SizedBox(height: space_small),
-
-                        //Number of likes~~
-                        Container(
-                          child: Row(
+                          //This column contains number of ratings and likes~~
+                          Column(
                             children: [
-                              //Like icon here~~
+                              //Number of ratings~~
                               Container(
-                                margin: EdgeInsets.only(right: space_small),
-                                child: Icon(
-                                  Icons.favorite_outline_rounded,
-                                  color: color_green_dark,
+                                child: Row(
+                                  children: [
+                                    //Rating icon~~
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(right: space_small),
+                                      child: Icon(Icons.stars_rounded,
+                                          color: color_green_dark),
+                                    ),
+
+                                    //Rating text~~
+                                    Text('$rating',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .copyWith(fontSize: 20))
+                                  ],
                                 ),
                               ),
 
-                              //Like text here~~
-                              Text(
-                                '$like',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(fontSize: 20),
+                              SizedBox(height: space_small),
+
+                              //Number of likes~~
+                              Container(
+                                child: Row(
+                                  children: [
+                                    //Like icon here~~
+                                    Container(
+                                      margin:
+                                          EdgeInsets.only(right: space_small),
+                                      child: Icon(
+                                        Icons.favorite_outline_rounded,
+                                        color: color_green_dark,
+                                      ),
+                                    ),
+
+                                    //Like text here~~
+                                    Text(
+                                      '$like',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .copyWith(fontSize: 20),
+                                    )
+                                  ],
+                                ),
                               )
                             ],
                           ),
-                        )
+                        ],
+                      )),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: space_big, horizontal: space_medium),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Mô tả sản phẩm",
+                            style: Theme.of(context).textTheme.headline5),
+                        SizedBox(height: space_medium),
+                        Text('$description',
+                            style: Theme.of(context).textTheme.bodyText1)
                       ],
                     ),
-                  ],
-                )),
-
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: space_big, horizontal: space_medium),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Mô tả sản phẩm",
-                    style: Theme.of(context).textTheme.headline5
-                  ),
-
-                  SizedBox(height: space_medium),
-
-                  Text(
-                    '$description',
-                    style: Theme.of(context).textTheme.bodyText1
                   )
                 ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),
     );
   }
 }

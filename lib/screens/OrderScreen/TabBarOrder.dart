@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:seller_app/abstracts/variables.dart';
 import 'package:seller_app/screens/OrderScreen/components/OrderCard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,39 +13,38 @@ class TabBarOrder extends StatefulWidget {
 }
 
 class _TabBarOrderState extends State<TabBarOrder> {
-
-
   @override
   Widget build(BuildContext context) {
     return TabBarView(
-        children: [
-          Column(
-            children: [
-              ListOrderItems(status: 'waiting', nextStepStatus: 'processing', denyStatus: 'denied', ),
-            ] 
+      children: [
+        Column(children: [
+          ListOrderItems(
+            status: 'waiting',
+            nextStepStatus: 'processing',
+            denyStatus: 'denied',
           ),
-          Column(
-            children: [
-              ListOrderItems(status: 'processing', nextStepStatus: 'shipping'),
-            ] 
+        ]),
+        Column(children: [
+          ListOrderItems(status: 'processing', nextStepStatus: 'shipping'),
+        ]),
+        Column(children: [
+          ListOrderItems(
+            status: 'shipping',
+            nextStepStatus: 'close',
           ),
-          Column(
-            children: [
-              ListOrderItems(status: 'shipping', nextStepStatus: 'close',),
-            ] 
+        ]),
+        Column(children: [
+          ListOrderItems(
+            status: 'close',
           ),
-          Column(
-            children: [
-              ListOrderItems(status: 'close',),
-            ] 
+        ]),
+        Column(children: [
+          ListOrderItems(
+            status: 'denied',
           ),
-          Column(
-            children: [
-              ListOrderItems(status: 'denied',),
-            ] 
-          ),
-        ],
-      );
+        ]),
+      ],
+    );
   }
 }
 
@@ -80,40 +80,40 @@ class _ListOrderItemsState extends State<ListOrderItems> {
       status = widget.status;
       nextStepStatus = widget.nextStepStatus;
       denyStatus = widget.denyStatus;
-      
+
       dio.get('$api_url/order/item/seller/$sellerId/$status').then((value) {
         if (value.data['success']) {
-          if(mounted) {
+          if (mounted) {
             setState(() {
               items = value.data['items'];
             });
-          } 
+          }
         }
       });
     });
   }
 
   void _removeFormList(String orderItemId, String curentStatus) async {
-    await dio.put('$api_url/order/updateOrderItemStatus/$orderItemId', data: {
-      "status": curentStatus
-    });
+    await dio.put('$api_url/order/updateOrderItemStatus/$orderItemId',
+        data: {"status": curentStatus});
     dio.get('$api_url/order/item/seller/$sellerId/$status').then((value) {
       print(value.data);
       if (value.data['success']) {
-        if(mounted) {
+        if (mounted) {
           setState(() {
             items = value.data['items'];
           });
-        } 
+        }
       }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: EdgeInsets.only(
+            left: space_small, right: space_small, top: space_medium, bottom: nav_height),
         itemCount: items.length,
         itemBuilder: (context, index) {
           dynamic item = items[index];
@@ -122,20 +122,23 @@ class _ListOrderItemsState extends State<ListOrderItems> {
           String thumbnail = item['productId']['thumbnail'];
           int price = item['productId']['price'];
           int amount = item['amount'];
-          final dateString = item['created'] != null ? item['created'] : DateTime.now().toString();
-          String date = new DateFormat('dd-MM-yyyy').format(DateTime.parse(dateString)).toString();
+          final dateString = item['created'] != null
+              ? item['created']
+              : DateTime.now().toString();
+          String date = new DateFormat('dd-MM-yyyy')
+              .format(DateTime.parse(dateString))
+              .toString();
           return OrderCard(
-            orderItemId: orderItemId,
-            productName: productName, 
-            price: price, 
-            amount: amount, 
-            thumbnail: thumbnail,
-            date: date,
-            updateStatusAction: _removeFormList,
-            nextStepStatus: nextStepStatus,
-            denyStatus: denyStatus,
-            currentStatus: status
-          );
+              orderItemId: orderItemId,
+              productName: productName,
+              price: price,
+              amount: amount,
+              thumbnail: thumbnail,
+              date: date,
+              updateStatusAction: _removeFormList,
+              nextStepStatus: nextStepStatus,
+              denyStatus: denyStatus,
+              currentStatus: status);
         },
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +99,6 @@ class _ChatBoxState extends State<ChatBox> {
     }
   }
 
-  @override
   void onDispose() {
     super.dispose();
     socket.emit('disconnect');
@@ -108,6 +109,11 @@ class _ChatBoxState extends State<ChatBox> {
 
   @override
   Widget build(BuildContext context) {
+    Timer(
+      Duration(seconds: 0),
+        () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent)
+    );
+
     return Scaffold(
       appBar: NewGradientAppBar(
         title: Row(
@@ -126,8 +132,10 @@ class _ChatBoxState extends State<ChatBox> {
                           'https://i0.wp.com/lucloi.vn/wp-content/uploads/2020/04/f45.jpg?fit=800%2C403&ssl=1'),
                       fit: BoxFit.cover)),
             ),
-            Text('ryenguyen2000', style: Theme.of(context).textTheme.bodyText1, maxLines: 1,
-              overflow: TextOverflow.ellipsis)
+            Text('ryenguyen2000',
+                style: Theme.of(context).textTheme.bodyText1,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis)
           ],
         ),
         // title: Text(topic != null ? topic : ''),
@@ -144,8 +152,7 @@ class _ChatBoxState extends State<ChatBox> {
           children: <Widget>[
             Expanded(
               child: Container(
-                padding: EdgeInsets.only(
-                    left: space_small, right: space_small),
+                padding: EdgeInsets.only(left: space_small, right: space_small),
                 child: ListView.builder(
                   controller: _scrollController,
                   itemCount: messages.length,

@@ -13,6 +13,7 @@ const double border_radius_big = 20.0;
 const double border_radius_huge = 60.0;
 
 const double icon_size = 30.0;
+const double nav_height = 80.0;
 
 const BorderRadius card_shape_primary = BorderRadius.only(
   topLeft: Radius.circular(border_radius_small),
@@ -30,7 +31,7 @@ const BorderRadius card_shape_secondary = BorderRadius.only(
 
 const BoxShadow box_shadow_black = BoxShadow(
   color: color_black_opacity_strong,
-  blurRadius: 10, // soften the shadow
+  blurRadius: 4, // soften the shadow
   spreadRadius: -1.0, //extend the shadow
   offset: Offset(
     0.0,

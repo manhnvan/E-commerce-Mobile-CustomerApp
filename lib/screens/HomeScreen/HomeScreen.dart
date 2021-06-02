@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
-import 'package:seller_app/components/BottomNavBar.dart';
+import 'package:seller_app/components/BottomNavBarVer2.dart';
 import 'package:seller_app/constaint.dart';
 import 'package:seller_app/screens/HomeScreen/components/ProductCard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,31 +51,41 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: NewGradientAppBar(
-            title: Text("Gian hàng của bạn"),
-            gradient: color_gradient_primary,
-        automaticallyImplyLeading: false),
-        body: Padding(
-          padding: EdgeInsets.only(
-              top: space_big, left: space_small, right: space_small),
-          child: ListView.builder(
+      appBar: NewGradientAppBar(
+          title: Text("Gian hàng của bạn",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: color_white)),
+          gradient: color_gradient_primary,
+          automaticallyImplyLeading: false),
+      body: Container(
+        color: color_grey,
+        child: Stack(children: [
+          ListView.builder(
+            padding: EdgeInsets.only(
+                left: space_small,
+                right: space_small,
+                top: space_small,
+                bottom: nav_height),
             itemCount: products.length,
             itemBuilder: (context, index) {
               dynamic item = products[index];
               return ProductCard(
-                productId: item['_id'],
-                productName: item['productName'],
-                image: item['thumbnail'],
-                price: item['price'],
-                vendor: item['vendor'],
-                rate: item['rating'].toDouble(),
-                like: item['like'],
-                product: item
-              );
-                  
+                  productId: item['_id'],
+                  productName: item['productName'],
+                  image: item['thumbnail'],
+                  price: item['price'],
+                  vendor: item['vendor'],
+                  rate: item['rating'].toDouble(),
+                  like: item['like'],
+                  product: item);
             },
           ),
-        ),
-        bottomNavigationBar: BottomNavBar(0));
+          Positioned(left: 0, bottom: 0, child: BottomNavBarVer2(0, null))
+        ]),
+      ),
+      // bottomNavigationBar: BottomNavBar(0)
+    );
   }
 }

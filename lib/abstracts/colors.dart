@@ -9,6 +9,7 @@ const color_primary_opacity_strong = Color(0x00B6F492);
 const color_secondary = Color(0xFF63D1DB);
 
 const color_green_dark = Color(0xFF1E2B16);
+const color_red_light = Color(0xFFFF6F6F);
 
 //Here's the gradient
 const color_gradient_primary = LinearGradient(
@@ -55,5 +56,6 @@ const color_test = LinearGradient(
 //Black and white here
 const color_white = Color(0xFFFFFFFF);
 const color_white_opacity_strong = Color(0x00FFFFFF);
+const color_grey = Color(0xFFF6F6F6);
 const color_black = Color(0xFF000000);
 const color_black_opacity_strong = Color(0x4D000000);

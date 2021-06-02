@@ -1,17 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:seller_app/components/BottomNavBar.dart';
+import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
+import 'package:seller_app/abstracts/colors.dart';
+import 'package:seller_app/abstracts/variables.dart';
+import 'package:seller_app/components/BottomNavBarVer2.dart';
+import 'package:seller_app/screens/AccountScreen/components/OrderInfoCard.dart';
+import 'package:seller_app/screens/AccountScreen/components/PersonalInfoCard.dart';
 import 'package:seller_app/screens/LoginScreen/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constaint.dart';
 
-
 class AccountScreen extends StatefulWidget {
   static final routeName = '/account';
-  AccountScreen({
-    Key key
-  }) : super(key: key);
+
+  AccountScreen({Key key}) : super(key: key);
 
   @override
   _AccountScreenState createState() => _AccountScreenState();
@@ -22,7 +25,11 @@ class _AccountScreenState extends State<AccountScreen> {
 
   var dio = new Dio();
   SharedPreferences prefs;
-  String waitingItem = '', processingItem = '', shippingItem = '', closeItem = '', deniedItem = '';
+  String waitingItem = '',
+      processingItem = '',
+      shippingItem = '',
+      closeItem = '',
+      deniedItem = '';
 
   @override
   void initState() {
@@ -43,7 +50,7 @@ class _AccountScreenState extends State<AccountScreen> {
             closeItem = doc['closeItem'].toString();
             deniedItem = doc['deniedItem'].toString();
           });
-        } 
+        }
       });
     });
     super.initState();
@@ -52,247 +59,85 @@ class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          // color: Colors.black12,
-          margin: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                      children:[
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Tên đăng nhập", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(username, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Số điện thoại", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(phoneNumber, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Địa chỉ", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Flexible(
-                                child: Column(
-                                    children:[
-                                      Container(
-                                          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                          height: 50.0,
-                                          child: Text(address, style: TextStyle(fontSize: 17.0), overflow: TextOverflow.ellipsis,)
-                                      ),
-                                    ]
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                  )
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                      children:[
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Đơn hàng chờ", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(waitingItem, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Đang xử lý", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(processingItem, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Đang vận chuyển", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(shippingItem, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Đã nhận", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(closeItem, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(accout_card_info_margin),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(account_card_border_radius),
-                            color: Colors.lightBlueAccent
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Từ chối", style: TextStyle(fontSize: 17.0),)
-                              ),
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text(deniedItem, style: TextStyle(fontSize: 17.0),)
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]
-                  )
-              ),
-              Container(
-                  margin: EdgeInsets.all(accout_card_info_margin),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(account_card_border_radius),
-                    color: Colors.lightBlueAccent
-                  ),
-                  child: TextButton(
-                    onPressed: (){
-                      Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (Route<dynamic> route) => false,);
+      appBar: NewGradientAppBar(
+          title: Text("Thông tin người bán",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: color_white)),
+          gradient: color_gradient_primary,
+          automaticallyImplyLeading: false),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(children: [
+          SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.fromLTRB(space_medium, space_huge,
+                  space_medium, space_huge + nav_height),
+              child: Column(
+                children: [
+                  //Order info here =.=
+                  Column(children: [
+                    Text('Thông tin đơn hàng',
+                        style: Theme.of(context).textTheme.headline6),
+                    SizedBox(height: space_big),
+                    OrderInfoCard(
+                        Icons.refresh_rounded, 'Đơn hàng chờ', waitingItem),
+                    OrderInfoCard(
+                        Icons.all_inbox_rounded, 'Đang xử lý', processingItem),
+                    OrderInfoCard(Icons.local_shipping_rounded,
+                        'Đang vận chuyển', shippingItem),
+                    OrderInfoCard(
+                        Icons.receipt_long_rounded, 'Đã chuyển ', closeItem),
+                    OrderInfoCard(Icons.block_rounded, 'Từ chối', deniedItem)
+                  ]),
+
+                  SizedBox(height: space_huge),
+
+                  //Personal info here :<
+                  Column(children: [
+                    Text('Thông tin cá nhân',
+                        style: Theme.of(context).textTheme.headline6),
+                    SizedBox(height: space_big),
+                    PersonalInfoCard(Icons.account_circle_rounded,
+                        'Tên đăng nhập', username),
+                    PersonalInfoCard(
+                        Icons.phone_rounded, 'Số điện thoại', phoneNumber),
+                    PersonalInfoCard(Icons.home_rounded, 'Địa chỉ', address),
+                    SizedBox(height: space_huge)
+                  ]),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        LoginScreen.routeName,
+                        (Route<dynamic> route) => false,
+                      );
                     },
-                    child: Column(
-                        children:[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                                  height: 50.0,
-                                  child: Text("Đăng xuất", style: TextStyle(fontSize: 17.0, color: Colors.black),)
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 25,
-                              )
-                            ],
-                          ),
-                        ]
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            margin: EdgeInsets.only(right: space_small),
+                            child: Text(
+                              "Đăng xuất",
+                              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                color: color_secondary
+                              )),
+                            ),
+                        Icon(Icons.logout, size: icon_size, color: color_secondary)
+                      ],
                     ),
-                  )
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Positioned(left: 0, bottom: 0, child: BottomNavBarVer2(4, null))
+        ]),
       ),
-      bottomNavigationBar: BottomNavBar(4),
+      // bottomNavigationBar: BottomNavBar(4),
     );
   }
 }
-
-

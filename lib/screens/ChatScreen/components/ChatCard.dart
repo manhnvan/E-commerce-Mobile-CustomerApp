@@ -15,10 +15,7 @@ class ChatCard extends StatelessWidget {
       margin:
           EdgeInsets.symmetric(horizontal: space_medium, vertical: space_small),
       decoration: BoxDecoration(
-          borderRadius: card_shape_secondary,
-          boxShadow: [box_shadow_black]
-      ),
-
+          borderRadius: card_shape_secondary, boxShadow: [box_shadow_black]),
       child: ClipRRect(
         borderRadius: card_shape_secondary,
         clipBehavior: Clip.antiAlias,
@@ -29,8 +26,8 @@ class ChatCard extends StatelessWidget {
                   bottomLeft: Radius.circular(border_radius_big)),
               gradient: color_gradient_secondary),
           child: Container(
-            decoration:
-            BoxDecoration(borderRadius: card_shape_secondary, color: color_white),
+            decoration: BoxDecoration(
+                borderRadius: card_shape_secondary, color: color_white),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,7 +36,8 @@ class ChatCard extends StatelessWidget {
                 Container(
                     decoration: BoxDecoration(
                         border: Border.all(
-                            width: space_tiny - 2.5, color: color_primary_darker),
+                            width: space_tiny - 2.5,
+                            color: color_primary_darker),
                         shape: BoxShape.circle),
                     child: CircleAvatar(
                         radius: space_huge + space_medium,
@@ -55,12 +53,15 @@ class ChatCard extends StatelessWidget {
                         //Chat's topic here :3
                         Text(
                           chatInfo['topic'],
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            fontWeight: FontWeight.bold
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(fontWeight: FontWeight.bold, fontSize: 13.5),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
+
+                        SizedBox(height: space_tiny),
 
                         //Chat's date here :3
                         Text(
@@ -69,9 +70,10 @@ class ChatCard extends StatelessWidget {
                                   DateTime.parse(
                                       chatInfo['lastMessage']['created']))
                               : '',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 14
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              .copyWith(fontSize: 13.5, color: color_black_opacity_strong),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -81,9 +83,10 @@ class ChatCard extends StatelessWidget {
                         //Chat's last message here :3
                         Container(
                           child: Text(chatInfo['lastMessage']['content'],
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                                fontSize: 16
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(fontSize: 13.5),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis),
                         )

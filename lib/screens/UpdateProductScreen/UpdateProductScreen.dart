@@ -204,11 +204,14 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     //the data of the product can be set here
     return Scaffold(
       appBar: NewGradientAppBar(
-        title: Text("Cập nhật sản phẩm"),
+        title: Text("Cập nhật sản phẩm",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                .copyWith(color: color_white)),
         gradient: color_gradient_primary,
       ),
       body: SingleChildScrollView(
-        reverse: true,
         child: Padding(
           padding: EdgeInsets.all(space_medium),
           child: Column(
@@ -216,20 +219,20 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 //Product's name here~~
-                ProductField('Tên sản phẩm', _productName, null, 1),
+                ProductField('Tên sản phẩm', _productName, null),
 
                 //Product's price here~~
                 ProductField(
-                    'Giá thành sản phẩm', _price, TextInputType.number, 1),
+                    'Giá thành sản phẩm', _price, TextInputType.number),
 
                 //Product's unit here~~
-                ProductField('Đơn vị', _unit, null, 1),
+                ProductField('Đơn vị', _unit, null),
 
                 //Product's brand here~~
-                ProductField('Thương hiệu', _vendor, null, 1),
+                ProductField('Thương hiệu', _vendor, null),
 
                 //Product's description here~~
-                ProductField('Mô tả sản phẩm', _description, null, 5),
+                ProductField('Mô tả sản phẩm', _description, null),
 
                 //Thumbnail image here~~
                 Text('Cập nhật ảnh bìa',
@@ -375,7 +378,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
               height: MediaQuery.of(context).size.width * 0.2,
               decoration: BoxDecoration(
                   shape: BoxShape.circle, gradient: color_gradient_primary),
-              child: Icon(Icons.upload_rounded, size: 30))),
+              child: Icon(Icons.upload_rounded, size: icon_size))),
     );
   }
 }

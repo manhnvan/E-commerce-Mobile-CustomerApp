@@ -9,7 +9,7 @@ import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
-import 'package:seller_app/components/BottomNavBar.dart';
+import 'package:seller_app/components/BottomNavBarVer2.dart';
 import 'package:seller_app/components/ImagePreviewer.dart';
 import 'package:seller_app/components/ImageSelector.dart';
 import 'package:seller_app/components/ProductField.dart';
@@ -185,205 +185,207 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: NewGradientAppBar(
-        title: Text("Thêm sản phẩm"),
-        gradient: color_gradient_primary,
-          automaticallyImplyLeading: false
-      ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: Padding(
-          padding: EdgeInsets.all(space_medium),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                //Product's name here~~
-                ProductField('Tên sản phẩm', _productName, null, 1),
+          title: Text("Thêm sản phẩm",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(color: color_white)),
+          gradient: color_gradient_primary,
+          automaticallyImplyLeading: false),
+      body: Stack(children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: space_medium,
+                right: space_medium,
+                top: space_medium,
+                bottom: nav_height + space_medium),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  //Product's name here~~
+                  ProductField('Tên sản phẩm', _productName, null),
 
-                //Product's price here~~
-                ProductField(
-                    'Giá thành sản phẩm', _price, TextInputType.number, 1),
+                  //Product's price here~~
+                  ProductField(
+                      'Giá thành sản phẩm', _price, TextInputType.number),
 
-                //Product's unit here~~
-                ProductField('Đơn vị', _unit, null, 1),
+                  //Product's unit here~~
+                  ProductField('Đơn vị', _unit, null),
 
-                //Product's brand here~~
-                ProductField('Thương hiệu', _vendor, null, 1),
+                  //Product's brand here~~
+                  ProductField('Thương hiệu', _vendor, null),
 
-                //Product's description here~~
-                ProductField('Mô tả sản phẩm', _description, null, 5),
+                  //Product's description here~~
+                  ProductField('Mô tả sản phẩm', _description, null),
 
-                //Thumbnail image here~~
-                Text('Chọn ảnh bìa',
-                    style: Theme.of(context).textTheme.bodyText1),
-                SizedBox(height: space_medium),
-                thumbnail != null
-                    //This stack holds the product's thumbnail and the close button~~
-                    ? Stack(clipBehavior: Clip.none, children: [
-                        //This container contains the image itself~~
-                        ImagePreviewer(thumbnail),
+                  //Thumbnail image here~~
+                  Text('Chọn ảnh bìa',
+                      style: Theme.of(context).textTheme.bodyText1),
+                  SizedBox(height: space_medium),
+                  thumbnail != null
+                      //This stack holds the product's thumbnail and the close button~~
+                      ? Stack(clipBehavior: Clip.none, children: [
+                          //This container contains the image itself~~
+                          ImagePreviewer(thumbnail),
 
-                        //This is the close button :v
-                        Positioned(
-                          top: -space_small - 2,
-                          right: -space_small - 2,
-                          child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  thumbnail = null;
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(space_tiny - 1),
-                                decoration: BoxDecoration(
-                                    color: color_white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(1000)),
-                                    boxShadow: [box_shadow_black]),
-                                child: Icon(Icons.close_rounded,
-                                    color: color_primary_darker),
-                              )),
-                        ),
-                      ])
-                    : ImageSelector(_getThumbnailAsset),
+                          //This is the close button :v
+                          Positioned(
+                            top: -space_small - 2,
+                            right: -space_small - 2,
+                            child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    thumbnail = null;
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(space_tiny - 1),
+                                  decoration: BoxDecoration(
+                                      color: color_white,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(1000)),
+                                      boxShadow: [box_shadow_black]),
+                                  child: Icon(Icons.close_rounded,
+                                      color: color_primary_darker),
+                                )),
+                          ),
+                        ])
+                      : ImageSelector(_getThumbnailAsset),
 
-                SizedBox(height: space_huge),
+                  SizedBox(height: space_huge),
 
-                //Product's image list here~~
-                Text('Chọn ảnh sản phẩm',
-                    style: Theme.of(context).textTheme.bodyText1),
+                  //Product's image list here~~
+                  Text('Chọn ảnh sản phẩm',
+                      style: Theme.of(context).textTheme.bodyText1),
 
-                SizedBox(height: space_medium),
+                  SizedBox(height: space_medium),
 
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      direction: Axis.horizontal,
-                      children: images
-                          .map((image) => Padding(
-                                padding:
-                                    EdgeInsets.symmetric(vertical: space_small),
-                                child: Stack(clipBehavior: Clip.none, children: [
-                                  ImagePreviewer(image),
-                                  Positioned(
-                                      top: -space_small - 2,
-                                      right: -space_small - 2,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            images.removeWhere(
-                                                    (img) => img == image);
-                                          });
-                                        },
-                                        child: Container(
-                                          padding:
-                                          EdgeInsets.all(space_tiny - 2),
-                                          decoration: BoxDecoration(
-                                              color: color_white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(1000)),
-                                              boxShadow: [box_shadow_black]),
-                                          child: Icon(Icons.close_rounded,
-                                              color: color_primary_darker),
-                                        ),
-                                      )),
-                                ]),
-                              ))
-                          .toList()),
-                ),
-
-                //Image picker here ;v
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: space_medium),
-                  child: ImageSelector(_getAsset),
-                ),
-
-                SizedBox(height: space_big),
-
-                //Product's categories here~~
-                Container(
-                  child: MultiSelectFormField(
-                    autovalidate: false,
-                    chipBackGroundColor: color_secondary,
-                    chipLabelStyle: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: color_white,
-                        fontSize: 15
-                    ),
-                    dialogTextStyle: Theme.of(context).textTheme.bodyText1,
-                    checkBoxActiveColor: color_secondary,
-                    checkBoxCheckColor: color_white,
-                    dialogShapeBorder: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(border_radius_big))),
-                    title: Text(
-                      "Danh mục",
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.length == 0) {
-                        return 'Chọn danh muc cho sản phẩm';
-                      }
-                      return null;
-                    },
-                    dataSource: [
-                      {
-                        "display": "Trang phục",
-                        "value": "Trang phục",
-                      },
-                      {
-                        "display": "Đồ gia dụng",
-                        "value": "Đồ gia dụng",
-                      },
-                      {
-                        "display": "Thiết bị điện tử",
-                        "value": "Thiết bị điện tử",
-                      },
-                      {
-                        "display": "Trang sức",
-                        "value": "Trang sức",
-                      },
-                      {
-                        "display": "Đồ chơi",
-                        "value": "Đồ chơi",
-                      },
-                      {
-                        "display": "Khác",
-                        "value": "Khác",
-                      },
-                    ],
-                    textField: 'display',
-                    valueField: 'value',
-                    okButtonLabel: 'Tiếp',
-                    cancelButtonLabel: 'Hủy',
-                    hintWidget: Text('Chọn một hoặc hơn các danh mục',
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 14
-                      ),
-                    ),
-                    initialValue: category,
-                    onSaved: (value) {
-                      if (value == null) return;
-                      setState(() {
-                        category = value;
-                      });
-                    },
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        direction: Axis.horizontal,
+                        children: images
+                            .map((image) => Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: space_small),
+                                  child:
+                                      Stack(clipBehavior: Clip.none, children: [
+                                    ImagePreviewer(image),
+                                    Positioned(
+                                        top: -space_small - 2,
+                                        right: -space_small - 2,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              images.removeWhere(
+                                                  (img) => img == image);
+                                            });
+                                          },
+                                          child: Container(
+                                            padding:
+                                                EdgeInsets.all(space_tiny - 2),
+                                            decoration: BoxDecoration(
+                                                color: color_white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(1000)),
+                                                boxShadow: [box_shadow_black]),
+                                            child: Icon(Icons.close_rounded,
+                                                color: color_primary_darker),
+                                          ),
+                                        )),
+                                  ]),
+                                ))
+                            .toList()),
                   ),
-                ),
-              ]),
+
+                  //Image picker here ;v
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: space_medium),
+                    child: ImageSelector(_getAsset),
+                  ),
+
+                  SizedBox(height: space_big),
+
+                  //Product's categories here~~
+                  Container(
+                    child: MultiSelectFormField(
+                      autovalidate: false,
+                      chipBackGroundColor: color_secondary,
+                      chipLabelStyle: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(color: color_white, fontSize: 15),
+                      dialogTextStyle: Theme.of(context).textTheme.bodyText1,
+                      checkBoxActiveColor: color_secondary,
+                      checkBoxCheckColor: color_white,
+                      dialogShapeBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(border_radius_big))),
+                      title: Text(
+                        "Danh mục",
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.length == 0) {
+                          return 'Chọn danh muc cho sản phẩm';
+                        }
+                        return null;
+                      },
+                      dataSource: [
+                        {
+                          "display": "Trang phục",
+                          "value": "Trang phục",
+                        },
+                        {
+                          "display": "Đồ gia dụng",
+                          "value": "Đồ gia dụng",
+                        },
+                        {
+                          "display": "Thiết bị điện tử",
+                          "value": "Thiết bị điện tử",
+                        },
+                        {
+                          "display": "Trang sức",
+                          "value": "Trang sức",
+                        },
+                        {
+                          "display": "Đồ chơi",
+                          "value": "Đồ chơi",
+                        },
+                        {
+                          "display": "Khác",
+                          "value": "Khác",
+                        },
+                      ],
+                      textField: 'display',
+                      valueField: 'value',
+                      okButtonLabel: 'Tiếp',
+                      cancelButtonLabel: 'Hủy',
+                      hintWidget: Text(
+                        'Chọn một hoặc hơn các danh mục',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(fontSize: 14),
+                      ),
+                      initialValue: category,
+                      onSaved: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          category = value;
+                        });
+                      },
+                    ),
+                  ),
+                ]),
+          ),
         ),
-      ),
-
-      //Upload button here~~
-      floatingActionButton: FloatingActionButton(
-          onPressed: uploadProduct,
-          child: Container(
-              width: MediaQuery.of(context).size.width * 0.2,
-              height: MediaQuery.of(context).size.width * 0.2,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, gradient: color_gradient_primary),
-              child: Icon(Icons.upload_rounded, size: 30))),
-
-      bottomNavigationBar: BottomNavBar(2),
+        Positioned(
+            left: 0, bottom: 0, child: BottomNavBarVer2(2, uploadProduct))
+      ]),
     );
   }
 }
