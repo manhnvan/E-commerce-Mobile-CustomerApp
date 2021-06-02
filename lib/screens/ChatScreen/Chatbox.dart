@@ -8,6 +8,7 @@ import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
 import 'package:seller_app/screens/ChatScreen/Message/LeftMessage.dart';
 import 'package:seller_app/screens/ChatScreen/Message/RightMessage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../constaint.dart';
@@ -43,27 +44,38 @@ class _ChatBoxState extends State<ChatBox> {
   final _scrollController = ScrollController();
   String topic;
   String chatboxId;
-  
+  dynamic personInChatbox;
 
-  String currentUserId = "608eb567489da0f52b6ec179";
+  SharedPreferences prefs;
+  String currentUserId;
 
   @override
   void initState() {
     try {
+      topic = widget.topic;
+      chatboxId = widget.chatboxId;
+      SharedPreferences.getInstance().then((value) {
+        prefs = value;
+        currentUserId = prefs.getString('sellerId');
+        dio.get('$chat_url/participants/$chatboxId/$currentUserId').then((value) {
+          if (value.data['success']) {
+            setState(() {
+              personInChatbox = value.data['peopleInChatbox'];
+            });
+          }
+        });
+        dio.get('$chat_url/message/$chatboxId/0').then((value) {
+          if (value.data['success']) {
+            setState(() {
+              messages.addAll(value.data['messages']);
+            });
+            _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+            connectToChatServer();
+          }
+        });
+      });
+
       super.initState();
-      setState(() {
-        topic = widget.topic;
-        chatboxId = widget.chatboxId;
-      });
-      dio.get('$chat_url/message/$chatboxId/0').then((value) {
-        if (value.data['success']) {
-          setState(() {
-            messages.addAll(value.data['messages']);
-          });
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-          connectToChatServer();
-        }
-      });
     } catch (e) {
       print(e.toString());
     }
@@ -99,6 +111,7 @@ class _ChatBoxState extends State<ChatBox> {
     }
   }
 
+  @override
   void onDispose() {
     super.dispose();
     socket.emit('disconnect');
@@ -114,12 +127,13 @@ class _ChatBoxState extends State<ChatBox> {
         () => _scrollController.jumpTo(_scrollController.position.maxScrollExtent)
     );
 
+    print(personInChatbox);
     return Scaffold(
       appBar: NewGradientAppBar(
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
+            personInChatbox != null ? Container(
               width: MediaQuery.of(context).size.width * 0.11,
               height: MediaQuery.of(context).size.width * 0.11,
               margin: EdgeInsets.only(right: space_medium),
@@ -128,14 +142,13 @@ class _ChatBoxState extends State<ChatBox> {
                   borderRadius:
                       BorderRadius.all(Radius.circular(border_radius_huge)),
                   image: DecorationImage(
-                      image: NetworkImage(
+                      image: personInChatbox['avatar'] != null ? NetworkImage(personInChatbox['avatar'])
+                      : NetworkImage(
                           'https://i0.wp.com/lucloi.vn/wp-content/uploads/2020/04/f45.jpg?fit=800%2C403&ssl=1'),
                       fit: BoxFit.cover)),
-            ),
-            Text('ryenguyen2000',
-                style: Theme.of(context).textTheme.bodyText1,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis)
+            ) : Container(),
+            personInChatbox != null ? Text(personInChatbox['username'], style: Theme.of(context).textTheme.bodyText1, maxLines: 1,
+              overflow: TextOverflow.ellipsis) : Container()
           ],
         ),
         // title: Text(topic != null ? topic : ''),
