@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _description = new TextEditingController();
   String currentUserId;
   List<dynamic> category = [];
+  List<dynamic> hiddenCategory = [];
 
   SharedPreferences prefs;
 
@@ -52,6 +54,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _getAsset() async {
+    setState(() {
+      hiddenCategory = [];
+    });
     List<Asset> assets = await selectImagesFromGallery();
     List<Future> futures = [];
     for (Asset asset in assets) {
@@ -67,20 +72,50 @@ class _AddProductScreenState extends State<AddProductScreen> {
             'Accept': "*/*"
           })));
     }
-    if (!mounted) return;
+    for (Asset asset in assets) {
+      final filePath = await FlutterAbsolutePath.getAbsolutePath(asset.identifier);
+      List<int> imageBytes = File(filePath).readAsBytesSync();
+      String imageString = base64Encode(imageBytes);
 
+      var formData = FormData.fromMap({
+        'image_base64': imageString,
+        "language": "vi",
+        "threshold": 60,
+        "limit": 5
+      });
+      futures.add(dio.post('https://api.imagga.com/v2/tags',
+          data: formData,
+          options: Options(headers: {
+            "Authorization": "Basic YWNjXzhiMWQ1OTlmYmFjYWQwZDpjOTUzOTliOTUyNDYyNzBiYTFmNjU1ZTFlYTkzODFkZg==",
+            'Accept': "*/*"
+          })));
+    }
+    if (!mounted) return;
+    var tempCate = hiddenCategory;
     Future.wait(futures).then((value) {
+      print("value: $value");
       List<String> listPaths = [];
+      var index = -1;
       for (dynamic res in value) {
+        index += 1;
         final Map mapResponse = json.decode(res.toString());
-        if (mapResponse['success']) {
-          final Map data = mapResponse['data'];
-          print(data);
-          listPaths.add(data['link']);
+        if(index < assets.length){
+          if (mapResponse['success']) {
+            final Map data = mapResponse['data'];
+            listPaths.add(data['link']);
+          }
+        }
+        else{
+          mapResponse["result"]["tags"].forEach((tag) {
+            if(!tempCate.contains(tag["tag"]["vi"])){
+              tempCate.add(tag["tag"]["vi"]);
+            }
+          });
         }
       }
       setState(() {
         images = listPaths;
+        hiddenCategory = tempCate;
       });
     });
   }
@@ -90,7 +125,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final thumbnailImage =
         await FlutterAbsolutePath.getAbsolutePath(assets[0].identifier);
     if (!mounted) return;
-    print(thumbnailImage);
     var formData = FormData.fromMap({
       'image': await MultipartFile.fromFile(thumbnailImage),
     });
@@ -104,7 +138,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         .then((value) {
       if (value.data['success']) {
         dynamic data = value.data['data'];
-        print(data['link']);
+
         setState(() {
           thumbnail = data['link'];
         });
@@ -137,6 +171,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> uploadProduct() async {
+    print("Category: $hiddenCategory");
     if (_productName.text == '' ||
         _vendor.text == '' ||
         _price.text == '' ||
@@ -165,7 +200,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
         'price': int.parse(_price.text),
         'unit': _unit.text,
         'vendor': _vendor.text,
-        'categories': category
+        'categories': category,
+        'hiddenCategories': hiddenCategory
       }).then((value) {
         final success = value.data['success'];
         if (!success) {
