@@ -77,18 +77,28 @@ class _AddProductScreenState extends State<AddProductScreen> {
       List<int> imageBytes = File(filePath).readAsBytesSync();
       String imageString = base64Encode(imageBytes);
 
+      // var formData = FormData.fromMap({
+      //   'image_base64': imageString,
+      //   "language": "vi",
+      //   "threshold": 60,
+      //   "limit": 5
+      // });
+
       var formData = FormData.fromMap({
-        'image_base64': imageString,
-        "language": "vi",
-        "threshold": 60,
-        "limit": 5
+        'image': await MultipartFile.fromFile(filePath),
       });
-      futures.add(dio.post('https://api.imagga.com/v2/tags',
+      // var url = "https://api.imagga.com/v2/tags";
+      var url = "http://192.168.0.107:6123/";
+
+      // var option = Options(headers: {
+      //   "Authorization": "Basic YWNjXzhiMWQ1OTlmYmFjYWQwZDpjOTUzOTliOTUyNDYyNzBiYTFmNjU1ZTFlYTkzODFkZg==",
+      //   'Accept': "*/*"
+      // });
+      var option = Options(headers: {});
+
+      futures.add(dio.post(url,
           data: formData,
-          options: Options(headers: {
-            "Authorization": "Basic YWNjXzhiMWQ1OTlmYmFjYWQwZDpjOTUzOTliOTUyNDYyNzBiYTFmNjU1ZTFlYTkzODFkZg==",
-            'Accept': "*/*"
-          })));
+          options: option));
     }
     if (!mounted) return;
     var tempCate = hiddenCategory;
@@ -106,10 +116,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
           }
         }
         else{
-          mapResponse["result"]["tags"].forEach((tag) {
-            if(!tempCate.contains(tag["tag"]["vi"])){
-              tempCate.add(tag["tag"]["vi"]);
-            }
+          // mapResponse["result"]["tags"].forEach((tag) {
+          //   if(!tempCate.contains(tag["tag"]["vi"])){
+          //     tempCate.add(tag["tag"]["vi"]);
+          //   }
+          // });
+          print(mapResponse["label"]);
+          mapResponse["label"].forEach((tag){
+              if(!tempCate.contains(tag)){
+                tempCate.add(tag);
+              }
           });
         }
       }
@@ -191,7 +207,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 // content: Text(""),
               ));
     } else {
-      dio.post('$api_url/product/create', data: {
+      var newData = {
+        'hiddenCategories': hiddenCategory,
         'sellerId': currentUserId,
         'productName': _productName.text,
         'description': _description.text,
@@ -201,8 +218,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
         'unit': _unit.text,
         'vendor': _vendor.text,
         'categories': category,
-        'hiddenCategories': hiddenCategory
-      }).then((value) {
+      };
+      dio.post('$api_url/product/create', data: newData).then((value) {
         final success = value.data['success'];
         if (!success) {
           showDialog(
