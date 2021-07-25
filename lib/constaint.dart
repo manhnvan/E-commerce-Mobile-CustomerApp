@@ -7,7 +7,7 @@ const imgur_url = 'https://api.imgur.com/3/upload';
 const clientId = '9732021ba764c63';
 const token = '5eeae49394cd929e299785c8805bd168fc675280';
 
-const api_url = "https://warm-thicket-10071.herokuapp.com";
+const api_url = "https://mobile2021api.herokuapp.com";
 
 const chat_url = "https://mobliechatserver.herokuapp.com";
 
