@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
@@ -37,6 +38,7 @@ class _AccountScreenState extends State<AccountScreen> {
     SharedPreferences.getInstance().then((value) {
       prefs = value;
       final sellerId = prefs.getString('sellerId');
+      EasyLoading.show(status: 'Loading ...');
       dio.get('$api_url/seller/$sellerId').then((value) {
         if (value.data['success']) {
           dynamic doc = value.data['doc'];
@@ -51,6 +53,9 @@ class _AccountScreenState extends State<AccountScreen> {
             deniedItem = doc['deniedItem'].toString();
           });
         }
+        EasyLoading.dismiss();
+      }).catchError((error) {
+        EasyLoading.dismiss();
       });
     });
     super.initState();

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:seller_app/abstracts/variables.dart';
 import 'package:seller_app/screens/OrderScreen/components/OrderCard.dart';
@@ -80,6 +81,7 @@ class _ListOrderItemsState extends State<ListOrderItems> {
       status = widget.status;
       nextStepStatus = widget.nextStepStatus;
       denyStatus = widget.denyStatus;
+      EasyLoading.show(status: 'Loading ...');
 
       dio.get('$api_url/order/item/seller/$sellerId/$status').then((value) {
         if (value.data['success']) {
@@ -89,6 +91,9 @@ class _ListOrderItemsState extends State<ListOrderItems> {
             });
           }
         }
+        EasyLoading.dismiss();
+      }).catchError((error) {
+        EasyLoading.dismiss();
       });
     });
   }

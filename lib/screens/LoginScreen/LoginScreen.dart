@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
 import 'package:seller_app/screens/HomeScreen/HomeScreen.dart';
@@ -41,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // content: Text(""),
               ));
     } else {
+      EasyLoading.show(status: 'loading...');
       dio.post('$api_url/seller/login', data: {
         'phone': _phoneNumber.text,
         'password': _password.text
@@ -61,7 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     title: Text(value.data['msg']),
                   ));
         }
+        EasyLoading.dismiss();
       }).catchError((e) {
+        EasyLoading.dismiss();
         showDialog(
             context: context,
             builder: (context) =>

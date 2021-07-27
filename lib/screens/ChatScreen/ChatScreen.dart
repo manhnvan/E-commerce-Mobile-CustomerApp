@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
@@ -31,14 +32,19 @@ class _ChatScreenState extends State<ChatScreen> {
     SharedPreferences.getInstance().then((value) {
       prefs = value;
       currentUserId = prefs.getString('sellerId');
+      EasyLoading.show(status: 'Loading ...');
       dio.get('$chat_url/$currentUserId/').then((value) {
+        
         if (value.data['success']) {
           print(value.data);
           setState(() {
             chatBoxes.addAll(value.data['chatboxes']);
           });
         }
+        EasyLoading.dismiss();
       });
+    }).catchError((e) {
+      EasyLoading.dismiss();
     });
   }
 

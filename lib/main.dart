@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:seller_app/abstracts/theme.dart';
 import 'package:seller_app/screens/AccountScreen/AccountScreen.dart';
@@ -28,6 +29,7 @@ AndroidNotificationChannel channel;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<void> main() async {
+  configLoading();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -85,6 +87,22 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..dismissOnTap = false;
+}
+
 // Crude counter to make messages unique
 int _messageCount = 0;
 
@@ -113,6 +131,7 @@ class MyApp extends StatelessWidget {
       theme: EzTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: LoginScreen.routeName,
+      builder: EasyLoading.init(),
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         OrderScreen.routeName: (context) => OrderScreen(),

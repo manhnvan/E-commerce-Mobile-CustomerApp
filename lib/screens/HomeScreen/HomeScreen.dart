@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:new_gradient_app_bar/new_gradient_app_bar.dart';
 import 'package:seller_app/abstracts/colors.dart';
 import 'package:seller_app/abstracts/variables.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPreferences.getInstance().then((value) {
       prefs = value;
       currentUserId = prefs.getString('sellerId');
+      EasyLoading.show(status: 'Loading ...');
       dio
           .get(
               '$api_url/product?page=$page&limit=$limit&sellerId=$currentUserId')
@@ -43,6 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: Text(value.data['msg']),
                   ));
         }
+        EasyLoading.dismiss();
+      }).catchError((e) {
+        EasyLoading.dismiss();
       });
     });
     super.initState();
